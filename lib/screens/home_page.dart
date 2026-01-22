@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/product_card.dart'; // Import widget kartu
-import '../models/product_model.dart'; // Import model dan data dummy
-import 'cart_screen.dart'; // Sesuaikan nama file jika menggunakan underscore
-import 'profile_screen.dart'; // Sesuaikan nama file jika menggunakan underscore
+import '../widgets/product_card.dart'; 
+import '../models/product_model.dart'; 
+import 'cart_screen.dart'; 
+import 'profile_screen.dart'; 
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,17 +10,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Indeks halaman yang sedang aktif (0: Produk, 1: Keranjang, 2: Profil)
   int _selectedIndex = 0;
 
-  // Daftar halaman yang akan ditampilkan sesuai menu navigasi
   final List<Widget> _pages = [
     ProductGridScreen(), 
     CartScreen(),    
     ProfileScreen(), 
   ];
 
-  // Fungsi untuk mengubah status indeks saat ikon ditekan
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -30,91 +27,181 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // AppBar hanya ditampilkan jika pengguna berada di halaman Produk (Indeks 0)
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: _selectedIndex == 0 
         ? AppBar(
             elevation: 0,
-            backgroundColor: Colors.white,
-            title: SizedBox(
-              height: 45,
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Cari produk impian...",
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.grey[100],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
+            backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
                 ),
+              ),
+            ),
+            title: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 45,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          )
+                        ],
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: "Cari produk terbaik...",
+                          hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
+                          prefixIcon: const Icon(Icons.search_rounded, color: Colors.blueAccent),
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: const EdgeInsets.all(0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  _buildNotificationIcon(),
+                ],
               ),
             ),
           ) 
         : null,
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed, // Menjaga posisi ikon tetap stabil
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Produk',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart_outlined),
-            activeIcon: Icon(Icons.shopping_cart),
-            label: 'Keranjang',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
-            label: 'Profil',
-          ),
-        ],
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: _pages[_selectedIndex],
       ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(color: Colors.black12, blurRadius: 10, spreadRadius: 0),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25),
+          ),
+          child: BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+            selectedItemColor: Colors.blueAccent,
+            unselectedItemColor: Colors.grey.shade400,
+            showSelectedLabels: true,
+            showUnselectedLabels: false,
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.grid_view_rounded),
+                activeIcon: Icon(Icons.grid_view_rounded),
+                label: 'Explor',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_bag_outlined),
+                activeIcon: Icon(Icons.shopping_bag),
+                label: 'Keranjang',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline_rounded),
+                activeIcon: Icon(Icons.person_rounded),
+                label: 'Profil',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotificationIcon() {
+    return Stack(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.notifications_none_rounded, color: Colors.black87),
+          onPressed: () {},
+        ),
+        Positioned(
+          right: 8,
+          top: 8,
+          child: Container(
+            padding: const EdgeInsets.all(4),
+            decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+            constraints: const BoxConstraints(minWidth: 8, minHeight: 8),
+          ),
+        )
+      ],
     );
   }
 }
 
-// --- Komponen Halaman 1: Produk ---
 class ProductGridScreen extends StatelessWidget {
   const ProductGridScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Produk Terbaru",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 15),
-          Expanded(
-            child: GridView.builder(
-              // Menggunakan panjang data dari dummyProducts.length
-              itemCount: dummyProducts.length, 
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 0.75,
+    return ListView(
+      physics: const BouncingScrollPhysics(),
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Halo, Selamat Datang!",
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  Text(
+                    "Koleksi Spesial",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                  ),
+                ],
               ),
-              itemBuilder: (context, index) {
-                // Memberikan data produk spesifik ke ProductCard
-                return ProductCard(product: dummyProducts[index]); 
-              },
-            ),
+              TextButton(
+                onPressed: () {},
+                child: const Text("Lihat Semua", style: TextStyle(color: Colors.blueAccent)),
+              )
+            ],
           ),
-        ],
-      ),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: dummyProducts.length, 
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 15,
+              crossAxisSpacing: 15,
+              childAspectRatio: 0.7,
+            ),
+            itemBuilder: (context, index) {
+              return ProductCard(product: dummyProducts[index]); 
+            },
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 }

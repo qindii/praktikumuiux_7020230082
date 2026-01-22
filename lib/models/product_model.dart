@@ -2,13 +2,13 @@ class Product {
   final String name;
   final String price;
   final String image;
-  final String description; // Tambahkan ini
+  final String description;
 
   Product({
     required this.name, 
     required this.price, 
     required this.image,
-    required this.description, // Tambahkan ini
+    required this.description,
   });
 }
 
